@@ -1,5 +1,5 @@
-#ifndef _KAFFE_VOLUME_H_
-#define _KAFFE_VOLUME_H_
+#ifndef _KAFFE_BLOB_H_
+#define _KAFFE_BLOB_H_
 
 #include <algorithm>
 #include <string>
@@ -10,9 +10,9 @@
 namespace kaffe {
 
 template <typename Dtype>
-class Volume {
+class Blob {
 public:
-    explicit Volume(unsigned int number, unsigned int channel, unsigned int height, unsigned int width) {
+    explicit Blob(unsigned int number, unsigned int channel, unsigned int height, unsigned int width) {
         shape_.resize(4);
         shape_[0] = width;
         shape_[1] = height;
@@ -23,16 +23,21 @@ public:
         device_ = -1;
         data_ = new Dtype[size_];
     }
-    explicit Volume(const std::vector<unsigned int> shape) {
+    explicit Blob(const std::vector<unsigned int> shape) {
         shape_ = shape;
         size_ = updateSize_();
 
         device_ = -1;
         data_ = new Dtype[size_];
     }
+    explicit Blob() {
+        size_ = 0;
+        device_ = -1;
+        data_ = new Dtype[size_];
+    }
 
-    ~Volume() {
-        if (device_ == -1) {        // -1 : CPU
+    ~Blob() {
+        if (device_ == -1 && data_ != NULL) {        // -1 : CPU
             delete data_;
             return;
         }
@@ -40,7 +45,6 @@ public:
 
 #endif
     }
-
     size_t size() const {
         return size_;
     }
@@ -72,7 +76,7 @@ protected:
 
     std::vector<unsigned int> shape_;
     size_t size_;
-};  // class Volume
+};  // class Blob
 
 }  // namespace kaffe
 

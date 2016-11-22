@@ -1,11 +1,13 @@
 #include <assert.h>
 
-#include <kaffe/volume.h>
+#include <kaffe/blob.h>
+
+#include "common.hpp"
 
 namespace kaffe {
 
 template <typename Dtype>
-bool Volume<Dtype>::cpu() {
+bool Blob<Dtype>::cpu() {
 #ifdef USE_GPU
     if ( device_ == -1) {
         return true;
@@ -19,7 +21,7 @@ bool Volume<Dtype>::cpu() {
 }
 
 template <typename Dtype>
-bool Volume<Dtype>::gpu(unsigned int dev) {
+bool Blob<Dtype>::gpu(unsigned int dev) {
 #ifndef USE_GPU
     assert( device_ == -1);
     return false;
@@ -28,5 +30,7 @@ bool Volume<Dtype>::gpu(unsigned int dev) {
     return false;
 #endif
 }
+
+INSTANTIATE_CLASS(Blob);
 
 } // namespace kaffe
