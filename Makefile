@@ -17,7 +17,9 @@ PROTOS = src/proto/caffe.pb.cc src/proto/caffe.pb.h
 LIB_SRCS = src/upgrade_proto.cpp\
 		   src/blob.cpp\
 		   src/layer.cpp\
-		   src/net.cpp
+		   src/net.cpp\
+		   src/conv_layer.cpp\
+		   src/fc_layer.cpp
 
 LIB_OBJS = ${LIB_SRCS:src/%.cpp=$(OBJS_DIR)/%.o}
 LIB_OBJS += $(OBJS_DIR)/proto/caffe.pb.o

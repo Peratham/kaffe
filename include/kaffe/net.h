@@ -24,7 +24,8 @@ template <typename Dtype>
 class Net {
 public:
     Net(const std::string& param_file, const std::string& weight_file) {
-      loadFromFiles(param_file, weight_file);
+      loadParamFile(param_file);
+      loadWeightFile(weight_file);
     }
   
     ~Net() {
@@ -54,7 +55,8 @@ public:
     bool gpu(unsigned int dev = 0);
 
 private:
-    void loadFromFiles(const std::string& param_file, const std::string& weight_file);
+    void loadParamFile(const std::string& param_file);
+    void loadWeightFile(const std::string& weight_file);
     Layer<Dtype>* createLayer(const caffe::LayerParameter& param);
 
 protected:

@@ -15,30 +15,22 @@ class Layer {
 public:
     explicit Layer(const caffe::LayerParameter& param) : layer_param_(param) {
         device_ = -1;
-        if (layer_param_.blobs_size() > 0) {
-            blobs_.resize(layer_param_.blobs_size());
-            for (int i = 0; i < layer_param_.blobs_size(); ++i) {
-                blobs_[i] = new Blob<Dtype>();
-            }
-        }
+        blobs_.clear();
     }
 
     virtual ~Layer() {
-        for (int i = 0; i < layer_param_.blobs_size(); ++i) {
+        for (size_t i = 0; i < blobs_.size(); ++i) {
             delete blobs_[i];
             blobs_[i] = NULL;
         }
     };
-
-    bool cpu();
-    bool gpu(unsigned int dev = 0);
   
     std::vector<Blob<Dtype>* > blobs() {
       return blobs_;
     }
-  
-    
-  
+
+    bool cpu();
+    bool gpu(unsigned int dev = 0);
     virtual Dtype Forward(const std::vector<Blob<Dtype>*>& bottom,
             const std::vector<Blob<Dtype>*>& top) = 0;
 
@@ -60,18 +52,6 @@ protected:
     }
   };
 
-  
-  template <typename Dtype>
-  class ConvolutionLayer : public Layer<Dtype> {
-  public:
-    explicit ConvolutionLayer(const caffe::LayerParameter& param) : Layer<Dtype>(param) { }
-    virtual Dtype Forward(const std::vector<Blob<Dtype>*>& bottom,
-                          const std::vector<Blob<Dtype>*>& top) {
-      // Do nothing
-      return 0.0;
-    }
-  };
-  
   template <typename Dtype>
   class ReLULayer : public Layer<Dtype> {
   public:
@@ -82,7 +62,7 @@ protected:
       return 0.0;
     }
   };
-  
+
   template <typename Dtype>
   class PoolingLayer : public Layer<Dtype> {
   public:
@@ -93,18 +73,7 @@ protected:
       return 0.0;
     }
   };
-  
-  template <typename Dtype>
-  class InnerProductLayer : public Layer<Dtype> {
-  public:
-    explicit InnerProductLayer(const caffe::LayerParameter& param) : Layer<Dtype>(param) { }
-    virtual Dtype Forward(const std::vector<Blob<Dtype>*>& bottom,
-                          const std::vector<Blob<Dtype>*>& top) {
-      // Do nothing
-      return 0.0;
-    }
-  };
-  
+
   template <typename Dtype>
   class SoftmaxLayer : public Layer<Dtype> {
   public:
@@ -115,6 +84,6 @@ protected:
       return 0.0;
     }
   };
-  
+
 } // namespace kaffe
 #endif

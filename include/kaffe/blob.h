@@ -18,22 +18,23 @@ public:
         shape_[1] = height;
         shape_[2] = channel;
         shape_[3] = number;
-        size_ = updateSize_();
+        size_ = getSize();
 
         device_ = -1;
         data_ = new Dtype[size_];
     }
-    explicit Blob(const std::vector<unsigned int> shape) {
+    explicit Blob(const std::vector<unsigned int>& shape) {
         shape_ = shape;
-        size_ = updateSize_();
+        size_ = getSize();
 
         device_ = -1;
         data_ = new Dtype[size_];
     }
     explicit Blob() {
+        shape_.clear();
         size_ = 0;
         device_ = -1;
-        data_ = new Dtype[size_];
+        data_ = NULL;
     }
 
     ~Blob() {
@@ -57,18 +58,38 @@ public:
     Dtype* getData() {
         return data_;
     }
-
+    void reset(const std::vector<unsigned int>& shape) {
+      reset();
+      shape_ = shape;
+      size_ = getSize();
+      
+      device_ = -1;
+      data_ = new Dtype[size_];
+    }
+    bool copyFromProto(const caffe::BlobProto& blobProto);
+  
     bool cpu();
     bool gpu(unsigned int dev = 0);
 
 private:
-    size_t updateSize_() const {
-        size_t totalSize = 0;
+    size_t getSize() const {
+        size_t totalSize = 1;
         for(size_t i = 0; i < shape_.size(); i++ ) {
             totalSize = totalSize * shape_[i];
         }
         return totalSize;
     }
+  
+    void reset() {
+      if ( data_ != NULL) {
+        delete data_;
+      }
+      
+      device_ = -1;
+      shape_.clear();
+      size_ = 0;
+      data_ = NULL;
+   }
 
 protected:
     int device_;

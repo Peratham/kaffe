@@ -12,6 +12,8 @@
 		540399EB1DE436CE00093B0A /* net.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 540399E41DE436CE00093B0A /* net.cpp */; };
 		540399EC1DE436CE00093B0A /* caffe.pb.cc in Sources */ = {isa = PBXBuildFile; fileRef = 540399E61DE436CE00093B0A /* caffe.pb.cc */; };
 		540399F31DE4372300093B0A /* demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 540399F21DE4372300093B0A /* demo.cpp */; };
+		540B53821DE6C9F100AD5BD8 /* conv_layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 540B53811DE6C9F100AD5BD8 /* conv_layer.cpp */; };
+		540B53851DE6DFC600AD5BD8 /* fc_layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 540B53841DE6DFC600AD5BD8 /* fc_layer.cpp */; };
 		54FEE8041DE5323D00997EBF /* upgrade_proto.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 54FEE8021DE5323D00997EBF /* upgrade_proto.cpp */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +40,10 @@
 		540399F11DE4370100093B0A /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net.h; sourceTree = "<group>"; };
 		540399F21DE4372300093B0A /* demo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = demo.cpp; path = tools/demo.cpp; sourceTree = "<group>"; };
 		540B536D1DE544A600AD5BD8 /* common.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = common.hpp; path = src/common.hpp; sourceTree = "<group>"; };
+		540B53801DE6C9E600AD5BD8 /* conv_layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = conv_layer.h; sourceTree = "<group>"; };
+		540B53811DE6C9F100AD5BD8 /* conv_layer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = conv_layer.cpp; path = src/conv_layer.cpp; sourceTree = "<group>"; };
+		540B53831DE6DFBD00AD5BD8 /* fc_layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fc_layer.h; sourceTree = "<group>"; };
+		540B53841DE6DFC600AD5BD8 /* fc_layer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fc_layer.cpp; path = src/fc_layer.cpp; sourceTree = "<group>"; };
 		544071351DE4368400111384 /* kaffe */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = kaffe; sourceTree = BUILT_PRODUCTS_DIR; };
 		54FEE8021DE5323D00997EBF /* upgrade_proto.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = upgrade_proto.cpp; path = src/upgrade_proto.cpp; sourceTree = "<group>"; };
 		54FEE8031DE5323D00997EBF /* upgrade_proto.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = upgrade_proto.hpp; path = src/upgrade_proto.hpp; sourceTree = "<group>"; };
@@ -67,6 +73,8 @@
 		540399ED1DE436E700093B0A /* src */ = {
 			isa = PBXGroup;
 			children = (
+				540B53841DE6DFC600AD5BD8 /* fc_layer.cpp */,
+				540B53811DE6C9F100AD5BD8 /* conv_layer.cpp */,
 				540B536D1DE544A600AD5BD8 /* common.hpp */,
 				54FEE8021DE5323D00997EBF /* upgrade_proto.cpp */,
 				54FEE8031DE5323D00997EBF /* upgrade_proto.hpp */,
@@ -81,6 +89,8 @@
 		540399EE1DE4370100093B0A /* include */ = {
 			isa = PBXGroup;
 			children = (
+				540B53831DE6DFBD00AD5BD8 /* fc_layer.h */,
+				540B53801DE6C9E600AD5BD8 /* conv_layer.h */,
 				540399EF1DE4370100093B0A /* blob.h */,
 				540399F01DE4370100093B0A /* layer.h */,
 				540399F11DE4370100093B0A /* net.h */,
@@ -166,10 +176,12 @@
 			files = (
 				540399EC1DE436CE00093B0A /* caffe.pb.cc in Sources */,
 				540399EB1DE436CE00093B0A /* net.cpp in Sources */,
+				540B53851DE6DFC600AD5BD8 /* fc_layer.cpp in Sources */,
 				540399E91DE436CE00093B0A /* blob.cpp in Sources */,
 				54FEE8041DE5323D00997EBF /* upgrade_proto.cpp in Sources */,
 				540399F31DE4372300093B0A /* demo.cpp in Sources */,
 				540399EA1DE436CE00093B0A /* layer.cpp in Sources */,
+				540B53821DE6C9F100AD5BD8 /* conv_layer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

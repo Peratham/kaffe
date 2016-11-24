@@ -5,8 +5,10 @@
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/text_format.h>
 
-#include <kaffe/layer.h>
 #include <kaffe/net.h>
+#include <kaffe/layer.h>
+#include <kaffe/conv_layer.h>
+#include <kaffe/fc_layer.h>
 
 #include "common.hpp"
 #include "upgrade_proto.hpp"
@@ -24,7 +26,7 @@ Layer<Dtype>* Net<Dtype>::createLayer(const caffe::LayerParameter& param) {
   } else if ( param.type() == "Input" ) {
     layer = new InputLayer<Dtype>(param);
   } else if ( param.type() == "Pooling" ) {
-    layer = new ConvolutionLayer<Dtype>(param);
+    layer = new PoolingLayer<Dtype>(param);
   } else if ( param.type() == "ReLU" ) {
     layer = new ReLULayer<Dtype>(param);
   } else if ( param.type() == "Softmax" ) {
@@ -37,7 +39,7 @@ Layer<Dtype>* Net<Dtype>::createLayer(const caffe::LayerParameter& param) {
 }
   
 template <typename Dtype>
-void Net<Dtype>::loadFromFiles(const std::string& param_file, const std::string& weight_file) {
+void Net<Dtype>::loadParamFile(const std::string& param_file) {
     caffe::NetParameter param;
     caffe::ReadNetParamsFromTextFileOrDie(param_file, &param);
   
@@ -72,6 +74,34 @@ void Net<Dtype>::loadFromFiles(const std::string& param_file, const std::string&
       }
       tops_.push_back( newTop);
     }
+}
+  
+template <typename Dtype>
+void Net<Dtype>::loadWeightFile(const std::string& weight_file) {
+  caffe::NetParameter param;
+  caffe::ReadNetParamsFromBinaryFileOrDie(weight_file, &param);
+  
+  for(int i = 0; i < param.layer_size(); i++) {
+    
+    const caffe::LayerParameter layer_param = param.layer(i);
+    if ( layer_param.blobs_size() == 0 ) {
+      continue;
+    }
+    if ( layersMap_.find(layer_param.name()) == layersMap_.end() ) {
+      continue;
+    }
+    const size_t layer_index = layersMap_[ layer_param.name() ];
+    
+    std::vector<Blob<Dtype>* > layerBlobs = layers_[layer_index]->blobs();
+    std::cout << layer_param.name() << std::endl;
+    assert( layerBlobs.size() == layer_param.blobs_size() );
+    
+    
+    for(int j = 0; j < layer_param.blobs_size(); j++) {
+      bool success = layerBlobs[j]->copyFromProto( layer_param.blobs(j));
+      assert(success == true);
+    }
+  }
 }
 
 template <typename Dtype>
