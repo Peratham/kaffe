@@ -4,7 +4,7 @@ C = gcc
 
 OBJS_DIR = obj
 
-INCS = -I./include -I./src -I/usr/local/include  
+INCS = -I./include -I./src -I./third_party  -I/usr/local/include  
 DEFS = -DUSE_GPU 
 LIB_PATH = -L/usr/local/lib
 LIB_LINK = -lprotobuf 

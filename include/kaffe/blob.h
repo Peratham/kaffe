@@ -12,6 +12,13 @@ namespace kaffe {
 template <typename Dtype>
 class Blob {
 public:
+    explicit Blob(const std::vector<unsigned int>& shape) {
+      shape_ = shape;
+      size_ = getSize();
+    
+      device_ = -1;
+      data_ = new Dtype[size_];
+    }
     explicit Blob(unsigned int number, unsigned int channel, unsigned int height, unsigned int width) {
         shape_.resize(4);
         shape_[0] = width;
@@ -23,13 +30,18 @@ public:
         device_ = -1;
         data_ = new Dtype[size_];
     }
-    explicit Blob(const std::vector<unsigned int>& shape) {
-        shape_ = shape;
-        size_ = getSize();
-
-        device_ = -1;
-        data_ = new Dtype[size_];
+  
+    explicit Blob(unsigned int channel, unsigned int height, unsigned int width) {
+      shape_.resize(3);
+      shape_[0] = width;
+      shape_[1] = height;
+      shape_[2] = channel;
+      size_ = getSize();
+    
+      device_ = -1;
+      data_ = new Dtype[size_];
     }
+  
     explicit Blob() {
         shape_.clear();
         size_ = 0;
@@ -55,9 +67,10 @@ public:
     int device() const {
         return device_;
     }
-    Dtype* getData() {
+    Dtype* data() {
         return data_;
     }
+  
     void reset(const std::vector<unsigned int>& shape) {
       reset();
       shape_ = shape;
@@ -66,8 +79,8 @@ public:
       device_ = -1;
       data_ = new Dtype[size_];
     }
-    bool copyFromProto(const caffe::BlobProto& blobProto);
   
+    bool copyFromProto(const caffe::BlobProto& blobProto);
     bool cpu();
     bool gpu(unsigned int dev = 0);
 
