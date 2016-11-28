@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 
-#include "proto/caffe.pb.h"
+#include <kaffe/proto/caffe.pb.h>
 #include "upgrade_proto.hpp"
 
 namespace caffe {

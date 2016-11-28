@@ -27,7 +27,7 @@ ConvolutionLayer<Dtype>::ConvolutionLayer(const caffe::LayerParameter& param) : 
 }
 
 template <typename Dtype>
-Dtype ConvolutionLayer<Dtype>::Forward(const std::vector<Blob<Dtype>*>& bottom,
+Dtype ConvolutionLayer<Dtype>::Forward(Engine<Dtype>* eng, const std::vector<Blob<Dtype>*>& bottom,
                                        const std::vector<Blob<Dtype>*>& top) {
   return 0.0;
 }

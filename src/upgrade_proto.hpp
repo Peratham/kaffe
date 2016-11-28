@@ -8,8 +8,8 @@
 #include <string>
 #include <assert.h>
 
+#include <kaffe/proto/caffe.pb.h>
 #include "common.hpp"
-#include "proto/caffe.pb.h"
 
 namespace caffe {
 

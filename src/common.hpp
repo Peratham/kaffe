@@ -1,6 +1,8 @@
 #ifndef _KAFFE_COMMON_H_
 #define _KAFFE_COMMON_H_
 
+#include <assert.h>
+
 #define INSTANTIATE_CLASS(classname) \
   template class classname<float>; \
   template class classname<double>

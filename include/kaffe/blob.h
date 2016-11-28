@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "proto/caffe.pb.h"
+#include <kaffe/proto/caffe.pb.h>
 
 namespace kaffe {
 
@@ -15,74 +15,81 @@ public:
     explicit Blob(const std::vector<unsigned int>& shape) {
       shape_ = shape;
       size_ = getSize();
-    
-      device_ = -1;
+
       data_ = new Dtype[size_];
     }
     explicit Blob(unsigned int number, unsigned int channel, unsigned int height, unsigned int width) {
         shape_.resize(4);
-        shape_[0] = width;
-        shape_[1] = height;
-        shape_[2] = channel;
-        shape_[3] = number;
+        shape_[0] = number;
+        shape_[1] = channel;
+        shape_[2] = height;
+        shape_[3] = width;
         size_ = getSize();
 
-        device_ = -1;
         data_ = new Dtype[size_];
     }
-  
-    explicit Blob(unsigned int channel, unsigned int height, unsigned int width) {
-      shape_.resize(3);
-      shape_[0] = width;
-      shape_[1] = height;
-      shape_[2] = channel;
+
+    explicit Blob(unsigned int number, unsigned int length) {
+      shape_.resize(2);
+      shape_[0] = number;
+      shape_[1] = length;
+      
       size_ = getSize();
-    
-      device_ = -1;
+
       data_ = new Dtype[size_];
     }
-  
+
     explicit Blob() {
         shape_.clear();
         size_ = 0;
-        device_ = -1;
         data_ = NULL;
     }
 
     ~Blob() {
-        if (device_ == -1 && data_ != NULL) {        // -1 : CPU
+        if (data_ != NULL) {
             delete data_;
             return;
         }
-#ifdef USE_GPU
-
-#endif
     }
     size_t size() const {
         return size_;
     }
-    std::vector<unsigned int> shape() const {
+    const std::vector<unsigned int>& shape() const {
         return shape_;
-    }
-    int device() const {
-        return device_;
     }
     Dtype* data() {
         return data_;
     }
   
-    void reset(const std::vector<unsigned int>& shape) {
-      reset();
+    void reshape(const std::vector<unsigned int>& shape) {
+      int newSize = 1;
+      for(size_t i = 0; i < shape.size(); i++) {
+        newSize = newSize * shape[i];
+      }
+      assert(newSize == size_);
+      shape_ = shape;
+    }
+
+    void reset(const std::vector<unsigned int>& shape, const bool reuse = false) {
+      if ( reuse ) {
+        int newSize = 1;
+        for(size_t i = 0; i < shape.size(); i++) {
+          newSize = newSize * shape[i];
+        }
+        assert(newSize == size_);
+        shape_ = shape;
+        return;
+      }
+      
+      if ( data_ != NULL) {
+        delete data_;
+      }
       shape_ = shape;
       size_ = getSize();
-      
-      device_ = -1;
       data_ = new Dtype[size_];
     }
-  
+
     bool copyFromProto(const caffe::BlobProto& blobProto);
-    bool cpu();
-    bool gpu(unsigned int dev = 0);
 
 private:
     size_t getSize() const {
@@ -92,22 +99,10 @@ private:
         }
         return totalSize;
     }
-  
-    void reset() {
-      if ( data_ != NULL) {
-        delete data_;
-      }
-      
-      device_ = -1;
-      shape_.clear();
-      size_ = 0;
-      data_ = NULL;
-   }
 
 protected:
-    int device_;
     Dtype* data_;
-
+  
     std::vector<unsigned int> shape_;
     size_t size_;
 };  // class Blob

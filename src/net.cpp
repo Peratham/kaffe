@@ -14,11 +14,11 @@
 #include "upgrade_proto.hpp"
 
 namespace kaffe {
-  
+
 template <typename Dtype>
 Layer<Dtype>* Net<Dtype>::createLayer(const caffe::LayerParameter& param) {
   Layer<Dtype>* layer = NULL;
-  
+
   if ( param.type() == "Convolution" ) {
     layer = new ConvolutionLayer<Dtype>(param);
   } else if ( param.type() == "InnerProduct" ) {
@@ -34,24 +34,24 @@ Layer<Dtype>* Net<Dtype>::createLayer(const caffe::LayerParameter& param) {
   } else {
     assert(false);
   }
-  
+
   return layer;
 }
-  
+
 template <typename Dtype>
 void Net<Dtype>::loadParamFile(const std::string& param_file) {
     caffe::NetParameter param;
     caffe::ReadNetParamsFromTextFileOrDie(param_file, &param);
-  
+
     // building and check DAG
     for(int i = 0; i < param.layer_size(); i++) {
       const caffe::LayerParameter layer_param = param.layer(i);
-      
+
       assert( layersMap_.find( layer_param.name() ) == layersMap_.end() );
       Layer<Dtype>* layer = createLayer(layer_param);
       layers_.push_back(layer);
       layersMap_[ layer_param.name() ] = layers_.size() - 1;
-      
+
       std::vector<Blob<Dtype>*> newBottom;
       for(int i = 0; i < layer_param.bottom_size(); i++) {
         std::string blobName = layer_param.bottom(i);
@@ -59,7 +59,7 @@ void Net<Dtype>::loadParamFile(const std::string& param_file) {
         newBottom.push_back( blobs_[blobsMap_[blobName]] );
       }
       bottoms_.push_back(newBottom);
-      
+
       std::vector<Blob<Dtype>*> newTop;
       for(int i = 0; i < layer_param.top_size(); i++) {
         std::string blobName = layer_param.top(i);
@@ -75,14 +75,14 @@ void Net<Dtype>::loadParamFile(const std::string& param_file) {
       tops_.push_back( newTop);
     }
 }
-  
+
 template <typename Dtype>
 void Net<Dtype>::loadWeightFile(const std::string& weight_file) {
   caffe::NetParameter param;
   caffe::ReadNetParamsFromBinaryFileOrDie(weight_file, &param);
-  
+
   for(int i = 0; i < param.layer_size(); i++) {
-    
+
     const caffe::LayerParameter layer_param = param.layer(i);
     if ( layer_param.blobs_size() == 0 ) {
       continue;
@@ -91,12 +91,12 @@ void Net<Dtype>::loadWeightFile(const std::string& weight_file) {
       continue;
     }
     const size_t layer_index = layersMap_[ layer_param.name() ];
-    
+
     std::vector<Blob<Dtype>* > layerBlobs = layers_[layer_index]->blobs();
     std::cout << layer_param.name() << std::endl;
     assert( layerBlobs.size() == layer_param.blobs_size() );
-    
-    
+
+
     for(int j = 0; j < layer_param.blobs_size(); j++) {
       bool success = layerBlobs[j]->copyFromProto( layer_param.blobs(j));
       assert(success == true);
@@ -108,19 +108,9 @@ template <typename Dtype>
 Dtype Net<Dtype>::Forward() {
   Dtype loss = 0.0;
   for(size_t i = 0; i < layers_.size(); i++) {
-    loss = loss + layers_[i]->Forward( bottoms_[i], tops_[i]);
+    loss = loss + layers_[i]->Forward(engine_, bottoms_[i], tops_[i]);
   }
   return loss;
-}
-  
-template <typename Dtype>
-bool Net<Dtype>::cpu() {
-    return true;
-}
-
-template <typename Dtype>
-bool Net<Dtype>::gpu(unsigned int dev) {
-    return false;
 }
 
 INSTANTIATE_CLASS(Net);

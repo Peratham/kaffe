@@ -16,12 +16,11 @@ template <typename Dtype>
 class ConvolutionLayer : public Layer<Dtype> {
 public:
   explicit ConvolutionLayer(const caffe::LayerParameter& param);
-  virtual Dtype Forward(const std::vector<Blob<Dtype>*>& bottom,
+  virtual Dtype Forward(Engine<Dtype>* eng, const std::vector<Blob<Dtype>*>& bottom,
             const std::vector<Blob<Dtype>*>& top);
 
 private:
   caffe::ConvolutionParameter convParam;
-  
 };
 
 }
